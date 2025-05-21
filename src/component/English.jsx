@@ -1,26 +1,4 @@
-// import React from 'react';
-// import Header from './Header';
-// import { Button } from '@mui/material';
-// import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-// import { useNavigate } from "react-router-dom";
 
-// function Hindi() {
-//     const navigate = useNavigate();
-//   return (
-//     <div>
-//           <Header />
-//           <Button
-//         startIcon={<ArrowBackIcon />}
-//         onClick={() => navigate(-1)}
-//         sx={{ margin: 2 }}
-//       >
-//         Back
-//       </Button>
-//     </div>
-//   );
-// }
-
-// export default Hindi;
 
 import React, { useState } from 'react';
 import {
@@ -39,32 +17,32 @@ import Header from './Header';
 
 const videosData = [
   {
-    title: "Hindi Chapter 1 - Intro",
+    title: "English Chapter 1 - Intro",
     duration: "10 mins",
     progress: 0,
-    url: "https://www.youtube.com/watch?v=ysz5S6PUM-U"
+    url: "https://youtu.be/olu0ayE7-h8"
   },
   {
-    title: "Hindi Chapter 2 - Grammar",
+    title: "English Chapter 2 - Grammar",
     duration: "25 mins",
     progress: 0,
     url: "https://www.youtube./watch?v=jNQXAC9IVRw"
   },
   {
-    title: "Hindi Chapter 3 - Essay",
+    title: "English Chapter 3 - Essay",
     duration: "15 mins",
     progress: 0,
     url: "https://www.youtube.com/watch?v=ScMzIvxBSi4"
   },
   {
-    title: "Hindi Chapter 4 - Practice",
+    title: "English Chapter 4 - Practice",
     duration: "20 mins",
     progress: 0,
     url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
   }
 ];
 
-function Hindi() {
+function English() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -117,37 +95,56 @@ function Hindi() {
         )}
 
         {/* Video Playlist */}
-        {filteredVideos.length > 0 ? (
-          filteredVideos.map((video, index) => (
-            <Card
-              key={index}
-              sx={{ mb: 2, cursor: 'pointer' }}
-              onClick={() => setSelectedVideo(video)}
-            >
-              <CardContent>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  {video.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Duration: {video.duration}
-                </Typography>
-                <Box mt={1}>
-                  <LinearProgress variant="determinate" value={video.progress} />
-                  <Typography variant="caption" color="text.secondary">
-                    {video.progress}%
+        <Box
+          sx={{
+            display: {
+              xs: 'flex',
+              sm: 'flex',
+              lg: 'grid',
+            },
+            flexDirection: {
+              xs: 'column',
+              sm: 'column',
+            },
+            gridTemplateColumns: {
+              lg: 'repeat(2, 1fr)',
+            },
+            gap: {
+              lg: '20px',
+            },
+          }}>
+          {filteredVideos.length > 0 ? (
+            filteredVideos.map((video, index) => (
+              <Card
+                key={index}
+                sx={{ mb: 2, cursor: 'pointer' }}
+                onClick={() => setSelectedVideo(video)}
+              >
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {video.title}
                   </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <Typography variant="body2" color="text.secondary">
-            No videos found.
-          </Typography>
-        )}
+                  <Typography variant="body2" color="text.secondary">
+                    Duration: {video.duration}
+                  </Typography>
+                  <Box mt={1}>
+                    <LinearProgress variant="determinate" value={video.progress} />
+                    <Typography variant="caption" color="text.secondary">
+                      {video.progress}%
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No videos found.
+            </Typography>
+          )}
+        </Box>
       </Box>
-    </div>
+    </div >
   );
 }
 
-export default Hindi;
+export default English;

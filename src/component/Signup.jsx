@@ -1,138 +1,3 @@
-// import React, { useState } from "react";
-// import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-// import { Container, Paper, Typography, Button, TextField, Box, IconButton } from "@mui/material";
-// import CloseIcon from "@mui/icons-material/Close";
-
-// const Signup = ({ handleClose }) => {
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     email: "",
-//     password: "",
-//   });
-
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-  
-
-//   // const handleSubmit = (e) => {
-//   //   e.preventDefault();
-//   //   console.log("Signup Data:", formData);
-//   //   handleClose(); // Close modal on form submit
-//   // };  
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await fetch('http://localhost:3000/signup', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(formData),
-//       });
-  
-//       if (!res.ok) {
-//         throw new Error('Signup failed');
-//       }
-  
-//       const data = await res.json();
-//       console.log('Signup Success:', data);
-//       handleClose(); // Close modal on successful signup
-//     } catch (error) {
-//       console.error('Error during signup:', error);
-//     }
-//   };
-  
-//  const handleGoogleSuccess = async (credentialResponse) => {
-//     try {
-//       const { credential } = credentialResponse;
-//       console.log("Google Credential Token:", credential);
-  
-//       const res = await fetch("http://localhost:3000/auth/google_oauth2", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ id_token: credential }),
-//       });
-  
-//       const data = await res.json();
-//       console.log("Backend Response:", data);
-//       handleClose();
-//     } catch (error) {
-//       console.error("Error sending token to backend:", error);
-//     }
-//   };
-  
-
-//   const handleGoogleFailure = (error) => {
-//     console.error("Google login failed:", error);
-//   };
-//   const clientId = "997918727226-ip6c50q0b52fbt08rqvu11pu9j16hkg4.apps.googleusercontent.com"
-
-//   return (
-//     <GoogleOAuthProvider clientId={clientId}>
-//       <Container maxWidth="">
-//         <Paper elevation={3} sx={{ padding: 3, position: "relative" }}>
-//           {/* Close Button */}
-//           <IconButton
-//             onClick={handleClose}
-//             sx={{ position: "absolute", top: 10, right: 10 }}
-//           >
-//             <CloseIcon />
-//           </IconButton>
-
-//           <Typography variant="h5" align="center" gutterBottom>
-//             Signup
-//           </Typography>
-
-//           <form onSubmit={handleSubmit}>
-//             <TextField
-//               fullWidth
-//               label="Name"
-//               name="name"
-//               value={formData.name}
-//               onChange={handleChange}
-//               margin="normal"
-//               required
-//             />
-//             <TextField
-//               fullWidth
-//               label="Email"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleChange}
-//               margin="normal"
-//               required
-//             />
-//             <TextField
-//               fullWidth
-//               label="Password"
-//               type="password"
-//               name="password"
-//               value={formData.password}
-//               onChange={handleChange}
-//               margin="normal"
-//               required
-//             />
-//             <Button type="submit" fullWidth variant="contained" sx={{ mt: 2,backgroundColor: "#9b51e0" }}>
-//               Signup
-//             </Button>
-//           </form>
-
-//           <Box sx={{ textAlign: "center", mt: 2 }}>
-//             <Typography variant="body2">Or signup with Google</Typography>
-//             <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
-//           </Box>
-//         </Paper>
-//       </Container>
-//     </GoogleOAuthProvider>
-//   );
-// };
-
-// export default Signup;
-
-
 import React, { useState } from "react";
 import {
   Container,
@@ -143,7 +8,9 @@ import {
   Box,
   IconButton,
   MenuItem,
-  InputAdornment
+  InputAdornment,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from "@mui/icons-material/Visibility";
@@ -154,6 +21,11 @@ import * as Yup from "yup";
 
 const Signup = ({ handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const clientId =
     "997918727226-ip6c50q0b52fbt08rqvu11pu9j16hkg4.apps.googleusercontent.com";
@@ -161,19 +33,19 @@ const Signup = ({ handleClose }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
-    fid: Yup.string().required("FID number is required"),
     gender: Yup.string().required("Gender is required"),
     phone: Yup.string()
       .matches(/^[0-9]{10}$/, "Enter a valid 10-digit number")
       .required("Phone number is required"),
-    password: Yup.string().min(6, "Minimum 6 characters").required("Password is required"),
+    password: Yup.string()
+      .min(6, "Minimum 6 characters")
+      .required("Password is required"),
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
-      fid: "",
       gender: "",
       phone: "",
       password: "",
@@ -181,23 +53,48 @@ const Signup = ({ handleClose }) => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        const payload = {
+          name: values.name,
+          email: values.email,
+          gender: values.gender,
+          full_phone_number: `+91${values.phone}`,
+          password: values.password,
+        };
+
         const res = await fetch("http://localhost:3000/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(payload),
         });
 
         if (!res.ok) {
-          throw new Error("Signup failed");
+          const errorText = await res.text();
+          throw new Error(errorText || "Signup failed");
         }
 
         const data = await res.json();
         console.log("Signup Success:", data);
-        handleClose();
+
+        setSnackbar({
+          open: true,
+          message: "Signup successful!",
+          severity: "success",
+        });
+
+        // Automatically close after 3 seconds
+        setTimeout(() => {
+          setSnackbar((prev) => ({ ...prev, open: false }));
+          handleClose(); // close modal after showing success
+        }, 3000);
       } catch (error) {
         console.error("Error during signup:", error);
+        setSnackbar({
+          open: true,
+          message: "Signup failed: " + error.message,
+          severity: "error",
+        });
       }
     },
   });
@@ -215,14 +112,33 @@ const Signup = ({ handleClose }) => {
 
       const data = await res.json();
       console.log("Backend Response:", data);
-      handleClose();
+      setSnackbar({
+        open: true,
+        message: "Google signup successful!",
+        severity: "success",
+      });
+
+      setTimeout(() => {
+        setSnackbar((prev) => ({ ...prev, open: false }));
+        handleClose();
+      }, 3000);
     } catch (error) {
       console.error("Error sending token to backend:", error);
+      setSnackbar({
+        open: true,
+        message: "Google signup failed",
+        severity: "error",
+      });
     }
   };
 
   const handleGoogleFailure = (error) => {
     console.error("Google login failed:", error);
+    setSnackbar({
+      open: true,
+      message: "Google login failed",
+      severity: "error",
+    });
   };
 
   return (
@@ -263,27 +179,6 @@ const Signup = ({ handleClose }) => {
               helperText={formik.touched.email && formik.errors.email}
               margin="normal"
             />
-             <TextField
-              fullWidth
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              margin="normal"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
             <TextField
               select
               fullWidth
@@ -305,13 +200,47 @@ const Signup = ({ handleClose }) => {
               label="Phone Number"
               name="phone"
               value={formik.values.phone}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/\D/g, "");
+                formik.setFieldValue("phone", cleaned);
+              }}
               onBlur={formik.handleBlur}
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
               margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">+91</InputAdornment>
+                ),
+              }}
             />
-          
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.password && Boolean(formik.errors.password)
+              }
+              helperText={formik.touched.password && formik.errors.password}
+              margin="normal"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
             <Button
               type="submit"
               fullWidth
@@ -324,9 +253,23 @@ const Signup = ({ handleClose }) => {
 
           <Box sx={{ textAlign: "center", mt: 3 }}>
             <Typography variant="body2">Or signup with Google</Typography>
-            <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleFailure}
+            />
           </Box>
         </Paper>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert severity={snackbar.severity} sx={{ width: "100%" }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Container>
     </GoogleOAuthProvider>
   );

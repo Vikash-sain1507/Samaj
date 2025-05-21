@@ -23,6 +23,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LanguageIcon from "@mui/icons-material/Language";
+import PersonIcon from '@mui/icons-material/Person';
 
 function Sidebar({ open, toggleSidebar }) {
   const [coursesOpen, setCoursesOpen] = useState(false);
@@ -48,52 +49,68 @@ function Sidebar({ open, toggleSidebar }) {
         {/* Sidebar Menu */}
         <List>
         <ListItem button onClick={() => { navigate("/Home"); toggleSidebar(); }}>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
+            <ListItemIcon><HomeIcon style={{color:"#9b51e0"}} /></ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
           <ListItem button onClick={handleCoursesClick}>
-            <ListItemIcon><MenuBookIcon /></ListItemIcon>
+            <ListItemIcon><MenuBookIcon style={{color:"#9b51e0"}}/></ListItemIcon>
             <ListItemText primary="Courses" />
             {coursesOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={coursesOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button sx={{ pl: 4 }}>
+              {/* <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon><LanguageIcon /></ListItemIcon>
                 <ListItemText primary="English" />
-              </ListItem>
+              </ListItem> */}
+                  <ListItem button onClick={() => { navigate("/english"); toggleSidebar(); }}>
+            <ListItemIcon><LanguageIcon style={{color:"#9b51e0"}}/></ListItemIcon>
+            <ListItemText primary="English" />
+          </ListItem>
               {/* <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon><LanguageIcon /></ListItemIcon>
                 <ListItemText primary="Hindi" />
               </ListItem> */}
                 <ListItem button onClick={() => { navigate("/hindi"); toggleSidebar(); }}>
-            <ListItemIcon><LanguageIcon /></ListItemIcon>
-            <ListItemText primary="hindi" />
+            <ListItemIcon><LanguageIcon style={{color:"#9b51e0"}}/></ListItemIcon>
+            <ListItemText primary="Hindi" />
           </ListItem>
               <ListItem button sx={{ pl: 4 }}>
-                <ListItemIcon><LanguageIcon /></ListItemIcon>
+                <ListItemIcon><LanguageIcon style={{color:"#9b51e0"}}/></ListItemIcon>
                 <ListItemText primary="Computer" />
               </ListItem>
               <ListItem button sx={{ pl: 4 }}>
-                <ListItemIcon><LanguageIcon /></ListItemIcon>
+                <ListItemIcon><LanguageIcon style={{color:"#9b51e0"}} /></ListItemIcon>
                 <ListItemText primary="Combo" />
               </ListItem>
             </List>
           </Collapse>
           <ListItem button>
-            <ListItemIcon><SchoolIcon /></ListItemIcon>
+            <ListItemIcon><SchoolIcon style={{color:"#9b51e0"}} /></ListItemIcon>
             <ListItemText primary="My Free Courses" />
           </ListItem>
-          <ListItem button>
-            <ListItemIcon><ArticleIcon /></ListItemIcon>
+          <ListItem button onClick={() => { navigate("/blog"); toggleSidebar(); }}>
+            <ListItemIcon><ArticleIcon style={{color:"#9b51e0"}} /></ListItemIcon>
             <ListItemText primary="Blog" />
           </ListItem>
-          <ListItem button>
+          {/* <ListItem button>
+            <ListItemIcon><ArticleIcon /></ListItemIcon>
+            <ListItemText primary="Blog" />
+          </ListItem> */}
+          {/* <ListItem button>
             <ListItemIcon><SettingsIcon /></ListItemIcon>
             <ListItemText primary="Settings" />
+          </ListItem> */}
+           <ListItem button onClick={() => { navigate("/settings"); toggleSidebar(); }}>
+            <ListItemIcon ><SettingsIcon style={{color:"#9b51e0"}} /></ListItemIcon>
+            <ListItemText primary="Settings" />
+          </ListItem>
+          <ListItem button onClick={() => { navigate("/myprofile"); toggleSidebar(); }}>
+            <ListItemIcon><PersonIcon style={{color:"#9b51e0"}} /></ListItemIcon>
+            <ListItemText primary="My Profile" />
           </ListItem>
           <ListItem button>
-            <ListItemIcon><LogoutIcon /></ListItemIcon>
+            <ListItemIcon><LogoutIcon style={{color:"#9b51e0"}} /></ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItem>
         </List>

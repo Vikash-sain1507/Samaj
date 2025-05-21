@@ -9,6 +9,11 @@ import Sidebar from './component/Sidebar';
 import Home from './component/Home'; 
 import Hindi from './component/Hindi';
 import LayOut from './component/LayOut';
+import English from './component/English';
+import MyProfile from './component/MyProfile';
+import Settings from './component/Settings';
+import Blog from './component/Blog';
+import ForgetPassword from './component/ForgetPassword';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -39,6 +44,21 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/hindi" element={<Hindi />} />
+      </Routes>
+      <Routes>
+        <Route path="/english" element={<English />} />
+      </Routes>
+      <Routes>
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+      <Routes>
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+      <Routes>
+        <Route path="/myprofile" element={<MyProfile />} />
+      </Routes>
+      <Routes>
+        <Route path="/forgetpassword" element={<ForgetPassword />} />
       </Routes>
     </BrowserRouter>
   );

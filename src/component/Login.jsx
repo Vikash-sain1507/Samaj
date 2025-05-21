@@ -1,212 +1,349 @@
-// import React from "react";
+// import React, { useState } from "react";
 // import {
-//   Box,
-//   Button,
-//   Checkbox,
 //   Container,
-//   Grid,
-//   TextField,
+//   Paper,
 //   Typography,
+//   Button,
+//   TextField,
+//   IconButton,
+//   InputAdornment,
+//   Snackbar,
+//   Alert,
 // } from "@mui/material";
+// import CloseIcon from "@mui/icons-material/Close";
+// import Visibility from "@mui/icons-material/Visibility";
+// import VisibilityOff from "@mui/icons-material/VisibilityOff";
+// import { useFormik } from "formik";
+// import * as Yup from "yup";
 
+// const Login = ({ handleClose }) => {
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [snackbar, setSnackbar] = useState({
+//     open: false,
+//     message: "",
+//     severity: "success",
+//   });
 
-// function Login() {
+//   const validationSchema = Yup.object({
+//     email: Yup.string().email("Invalid email").required("Email is required"),
+//     password: Yup.string()
+//       .min(6, "Minimum 6 characters")
+//       .required("Password is required"),
+//   });
+
+//   const formik = useFormik({
+//     initialValues: {
+//       email: "",
+//       password: "",
+//     },
+//     validationSchema,
+//     onSubmit: async (values) => {
+//       try {
+//         const res = await fetch("http://localhost:3000/login", {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify(values),
+//         });
+
+//         const data = await res.json();
+
+//         if (!res.ok || data.error) {
+//           throw new Error(data.error || "Login failed");
+//         }
+
+//         // If login successful
+//         localStorage.setItem("token", data.token);
+//         localStorage.setItem("userId", data.user.id);
+
+//         setSnackbar({
+//           open: true,
+//           message: "Login successful!",
+//           severity: "success",
+//         });
+
+//         setTimeout(() => {
+//           handleClose?.();
+//         }, 2000);
+//       } catch (err) {
+//         console.error("Login error:", err.message);
+//         setSnackbar({
+//           open: true,
+//           message: "Login failed: " + err.message,
+//           severity: "error",
+//         });
+//       }
+//     },
+//   });
+
 //   return (
-//     <Container>
-//       <Grid container spacing={4} alignItems="center">
-//         {/* Left Section (Image + Description) */}
-//         <Grid item xs={12} md={6}>
-//           <Box display="flex" flexDirection="column" alignItems="center">
-//             <img
-//               src="https://images.pexels.com/photos/1164572/pexels-photo-1164572.jpeg?auto=compress&cs=tinysrgb&w=600"
-//               // Replace with actual image URL
-//               alt="Free Resources"
-//               style={{ width: "100%", borderRadius: 8 }}
-//             />
-//             <Typography variant="h5" fontWeight="bold" color="primary" mt={2}>
-//               Free Resources
-//             </Typography>
-//             <Typography variant="body2" color="textSecondary" textAlign="center">
-//               Free Notes, Past Papers, MTPs RTPs, ICAI Suggested Answers, AIR 1 Answer Sheets & Free Demo Videos on various topics - All for FREE and all at one place!!
-//             </Typography>
-//           </Box>
-//         </Grid>
+//     <Container maxWidth="sm">
+//       <Paper elevation={3} sx={{ padding: 4, position: "relative" }}>
+//         <IconButton
+//           onClick={handleClose}
+//           sx={{ position: "absolute", top: 10, right: 10 }}
+//         >
+//           <CloseIcon />
+//         </IconButton>
 
-//         {/* Right Section (Login Form) */}
-//         <Grid item xs={12} md={6}>
-//           <Box textAlign="center">
-//             <Typography variant="h4" fontWeight="bold" color="primary">
-//               1FIN
-//             </Typography>
-//             <Typography variant="subtitle1" color="textSecondary">
-//               By IndigoLearn
-//             </Typography>
+//         <Typography variant="h5" align="center" gutterBottom>
+//           Login
+//         </Typography>
 
-         
-//             <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
-//               <Checkbox />
-//               <Typography variant="body2">
-//                 I Accept <span style={{ color: "blue" }}>Terms of Use</span> and <span style={{ color: "blue" }}>Privacy Policy</span>
-//               </Typography>
-//             </Box>
+//         <form onSubmit={formik.handleSubmit}>
+//           <TextField
+//             fullWidth
+//             label="Email"
+//             name="email"
+//             value={formik.values.email}
+//             onChange={formik.handleChange}
+//             onBlur={formik.handleBlur}
+//             error={formik.touched.email && Boolean(formik.errors.email)}
+//             helperText={formik.touched.email && formik.errors.email}
+//             margin="normal"
+//           />
 
-//             {/* OR Divider */}
-//             <Box display="flex" alignItems="center" my={2}>
-//               <Box flex={1} height="1px" bgcolor="gray" />
-//               <Typography mx={1} color="gray">or</Typography>
-//               <Box flex={1} height="1px" bgcolor="gray" />
-//             </Box>
+//           <TextField
+//             fullWidth
+//             label="Password"
+//             type={showPassword ? "text" : "password"}
+//             name="password"
+//             value={formik.values.password}
+//             onChange={formik.handleChange}
+//             onBlur={formik.handleBlur}
+//             error={formik.touched.password && Boolean(formik.errors.password)}
+//             helperText={formik.touched.password && formik.errors.password}
+//             margin="normal"
+//             InputProps={{
+//               endAdornment: (
+//                 <InputAdornment position="end">
+//                   <IconButton
+//                     onClick={() => setShowPassword(!showPassword)}
+//                     edge="end"
+//                   >
+//                     {showPassword ? <VisibilityOff /> : <Visibility />}
+//                   </IconButton>
+//                 </InputAdornment>
+//               ),
+//             }}
+//           />
 
-//             {/* Phone Number Login */}
-//             <Typography variant="body2" mb={1}>
-//               Already have an account? Sign in using phone
-//             </Typography>
-//             <TextField
-//               fullWidth
-//               variant="outlined"
-//               placeholder="Enter phone number"
-//               InputProps={{
-//                 startAdornment: <Typography sx={{ pr: 1 }}>+91</Typography>,
-//               }}
-//             />
+//           <Button
+//             type="submit"
+//             fullWidth
+//             variant="contained"
+//             sx={{ mt: 2, backgroundColor: "#9b51e0" }}
+//           >
+//             Login
+//           </Button>
+//         </form>
+//       </Paper>
 
-//             {/* OTP Button */}
-//             <Button
-//               variant="outlined"
-//               fullWidth
-//               sx={{
-//                 mt: 2,
-//                 borderRadius: "20px",
-//                 borderColor: "purple",
-//                 color: "purple",
-//                 textTransform: "none",
-//                 "&:hover": { backgroundColor: "purple", color: "white" },
-//               }}
-//             >
-//               Get OTP on SMS
-//             </Button>
-//           </Box>
-//         </Grid>
-//       </Grid>
+//       <Snackbar
+//         open={snackbar.open}
+//         autoHideDuration={4000}
+//         onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+//         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+//       >
+//         <Alert
+//           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+//           severity={snackbar.severity}
+//           sx={{ width: "300px" }}
+//         >
+//           {snackbar.message}
+//         </Alert>
+//       </Snackbar>
 //     </Container>
 //   );
-// }
+// };
 
 // export default Login;
+
 import React, { useState } from "react";
 import {
-  Box,
-  Button,
-  Checkbox,
   Container,
-  Grid,
-  TextField,
+  Paper,
   Typography,
+  Button,
+  TextField,
+  IconButton,
+  InputAdornment,
+  Snackbar,
+  Alert,
+  Link,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ handleClose }) => {
+  const navigate = useNavigate(); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string()
+      .min(6, "Minimum 6 characters")
+      .required("Password is required"),
+  });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login success:", data);
-        localStorage.setItem("token", data.token); 
-      } else {
-        const errorData = await response.json();
-        console.error("Login failed:", errorData.message);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const res = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          throw new Error(data.error || "Login failed");
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.user.id);
+
+        setSnackbar({
+          open: true,
+          message: "Login successful!",
+          severity: "success",
+        });
+
+        setTimeout(() => {
+          handleClose?.();
+        }, 2000);
+      } catch (err) {
+        console.error("Login error:", err.message);
+        setSnackbar({
+          open: true,
+          message: "Login failed: " + err.message,
+          severity: "error",
+        });
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
+    },
+  });
+
+  const handleForgotPassword = () => {
+   navigate("/forgetpassword"); 
+    setSnackbar({
+      open: true,
+      message: "Redirect to forgot password screen (not implemented)",
+      severity: "info",
+    });
   };
 
   return (
-    <Container>
-      <Grid container spacing={4} alignItems="center">
-        {/* Left Section */}
-        <Grid item xs={12} md={6}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <img
-              src="https://images.pexels.com/photos/1164572/pexels-photo-1164572.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Free Resources"
-              style={{ width: "100%", borderRadius: 8 }}
-            />
-            <Typography variant="h5" fontWeight="bold" color="primary" mt={2}>
-              Free Resources
-            </Typography>
-            <Typography variant="body2" color="textSecondary" textAlign="center">
-              Free Notes, Past Papers, MTPs RTPs, ICAI Suggested Answers, AIR 1 Answer Sheets & Free Demo Videos on various topics - All for FREE and all at one place!!
-            </Typography>
-          </Box>
-        </Grid>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, position: "relative" }}>
+        <IconButton
+          onClick={handleClose}
+          sx={{ position: "absolute", top: 10, right: 10 }}
+        >
+          <CloseIcon />
+        </IconButton>
 
-        {/* Right Section */}
-        <Grid item xs={12} md={6}>
-          <Box textAlign="center">
-            <Typography variant="h4" fontWeight="bold" color="primary">
-              Ab Sabke Liye!
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              By Samaj
-            </Typography>
+        <Typography variant="h5" align="center" gutterBottom>
+          Login
+        </Typography>
 
-            <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
-              <Checkbox />
-              <Typography variant="body2">
-                I Accept <span style={{ color: "blue" }}>Terms of Use</span> and <span style={{ color: "blue" }}>Privacy Policy</span>
-              </Typography>
-            </Box>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+            margin="normal"
+          />
 
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Enter your email"
-              margin="normal"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <TextField
+            fullWidth
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            margin="normal"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-            <TextField
-              fullWidth
-              variant="outlined"
-              type="password"
-              placeholder="Enter your password"
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                mt: 2,
-                borderRadius: "20px",
-                backgroundColor: "purple",
-                color: "white",
-                textTransform: "none",
-                "&:hover": { backgroundColor: "darkviolet" },
-              }}
-              onClick={handleLogin}
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "right", mt: 1, mb: 2 }}
+          >
+            <Link
+              component="button"
+              variant="body2"
+              onClick={handleForgotPassword}
+              underline="hover"
+              sx={{ color: "#9b51e0" }}
             >
-              Login
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
+              Forgot Password?
+            </Link>
+          </Typography>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ backgroundColor: "#9b51e0" }}
+          >
+            Login
+          </Button>
+        </form>
+      </Paper>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: "300px" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
-}
+};
 
 export default Login;
