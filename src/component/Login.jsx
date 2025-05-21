@@ -303,8 +303,7 @@ const Login = ({ handleClose }) => {
           />
 
           <Typography
-            variant="body2"
-            sx={{ textAlign: "right", mt: 1, mb: 2 }}
+            variant="body2" sx={{ textAlign: "right", mt: 1, mb: 2 }}
           >
             <Link
               component="button"
